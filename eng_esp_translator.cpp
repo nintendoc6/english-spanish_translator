@@ -233,7 +233,7 @@ int main()
     */
     
     // Test conjugations
-    conjDriver();
+    
 
     return 0;
 }
