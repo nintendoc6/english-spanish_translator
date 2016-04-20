@@ -206,15 +206,12 @@ int main()
     string subject;         // Subject of English sentence
     string translated;      // Translated English sentence into Spanish
     
-    /** modVerb driver
+    // modVerb driver
     int verbIndex[] = {-1, -1};
     string modded;
     string input;
     getline(cin, input);
     cout << modVerb(input, verbIndex);
-    */
-    
-    
     
     /* checkVerb driver
     int verbIndex[] = {-1, -1};
@@ -233,7 +230,7 @@ int main()
     */
     
     // Test conjugations
-    conjDriver();
+    //conjDriver();
 
     return 0;
 }
