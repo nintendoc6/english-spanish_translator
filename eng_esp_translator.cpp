@@ -809,6 +809,8 @@ string modVerb(string engInput, int verb[])
             break;
     }
     
+    cout << endl << verbForm << endl;
+    
     // Analyze direct object
     for (int j = index; j > -1; j++)
     {
