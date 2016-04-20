@@ -33,6 +33,7 @@ string commConj();
 string perfConj();
 string pickApart(string);
 string modVerb(string, int[]);
+void modVerbSearch(string, int, int, string, int[]);
 
 // Structures
 struct espTenseMod
@@ -206,15 +207,12 @@ int main()
     string subject;         // Subject of English sentence
     string translated;      // Translated English sentence into Spanish
     
-    /** modVerb driver
+    // modVerb driver
     int verbIndex[] = {-1, -1};
     string modded;
     string input;
     getline(cin, input);
     cout << modVerb(input, verbIndex);
-    */
-    
-    
     
     /* checkVerb driver
     int verbIndex[] = {-1, -1};
@@ -233,7 +231,7 @@ int main()
     */
     
     // Test conjugations
-    conjDriver();
+    // conjDriver();
 
     return 0;
 }
@@ -689,16 +687,14 @@ void conjDriver()
 //*****************************************************************************
 // The modVerb function analyzes English verbs and appends codes to them, based
 // on subject and sentence context.
-// The function receives as input an English sentence or phrase as a string.
+// The function receives as input an English sentence or phrase as a string and
+// an int array to hold the outer and inner indexes of the verb form found.
 // The function returns the modified English sentence or phrase as a string.
 //*****************************************************************************
 string modVerb(string engInput, int verb[])
 {
     // Variables
     int index = -1;         // Index of English verb form found in input
-    int letters = 0;        // Length of English verb form found in input
-    int indexes;            // Last index value of English input
-    int hash;               // Index of hashtag phrase in English verb
     int objPos = 0;         // Variable used in getting direct object
     string verbForm;        // English verb form found in English input
     string dObject = "";    // Direct object to which the verb refers
@@ -711,102 +707,31 @@ string modVerb(string engInput, int verb[])
     // Open files
     pObjectFile.open("objPeople.txt");
     
-    // Get last index value of English phrase
-    indexes = engInput.length() - 1;
-    
-    // Reset English verb indexes
-    verb[0] = verb[1] = -1;
-    
     // Traverse engVerbs array, looking for instance of each verb in any form
     for (int v = 0; v < 28; v++)
     {
         for (int i = 0; i < 2; i++)
         {
             verbForm = engVerbs[v][i].infinAndPres124;
-            hash = verbForm.find('#', 0);
-            verbForm = verbForm.substr(0, hash);
-            index = engInput.find(verbForm, 0);
-            if (index != -1 && engVerbs[v][i].infinAndPres124.length() != 0)
-            {
-                letters = verbForm.length();
-                if ((engInput[index + letters] == ' '
-                || index + letters - 1 == indexes)
-                && (engInput[index - 1] == ' '
-                || index == 0))
-                {
-                    verb[0] = v;
-                    verb[1] = i;
-                    break;
-                }
-            }
+            modVerbSearch(engInput, v, i, verbForm, verb);
+            if (verb[1] != -1)
+                break;
             verbForm = engVerbs[v][i].pres3;
-            hash = verbForm.find('#', 0);
-            verbForm = verbForm.substr(0, hash - 1);
-            index = engInput.find(verbForm, 0);
-            if (index != -1 && engVerbs[v][i].pres3.length() != 0)
-            {
-                letters = verbForm.length();
-                if ((engInput[index + letters] == ' '
-                || index + letters - 1 == indexes)
-                && (engInput[index - 1] == ' '
-                || index == 0))
-                {
-                    verb[0] = v;
-                    verb[1] = i;
-                    break;
-                }
-            }
+            modVerbSearch(engInput, v, i, verbForm, verb);
+            if (verb[1] != -1)
+                break;
             verbForm = engVerbs[v][i].past;
-            hash = verbForm.find('#', 0);
-            verbForm = verbForm.substr(0, hash - 1);
-            index = engInput.find(verbForm, 0);
-            if (index != -1 && engVerbs[v][i].past.length() != 0)
-            {
-                letters = verbForm.length();
-                if ((engInput[index + letters] == ' '
-                || index + letters - 1 == indexes)
-                && (engInput[index - 1] == ' '
-                || index == 0))
-                {
-                    verb[0] = v;
-                    verb[1] = i;
-                    break;
-                }
-            }
+            modVerbSearch(engInput, v, i, verbForm, verb);
+            if (verb[1] != -1)
+                break;
             verbForm = engVerbs[v][i].part;
-            hash = verbForm.find('#', 0);
-            verbForm = verbForm.substr(0, hash - 1);
-            index = engInput.find(verbForm, 0);
-            if (index != -1 && engVerbs[v][i].part.length() != 0)
-            {
-                letters = verbForm.length();
-                if ((engInput[index + letters] == ' '
-                || index + letters - 1 == indexes)
-                && (engInput[index - 1] == ' '
-                || index == 0))
-                {
-                    verb[0] = v;
-                    verb[1] = i;
-                    break;
-                }
-            }
+            modVerbSearch(engInput, v, i, verbForm, verb);
+            if (verb[1] != -1)
+                break;
             verbForm = engVerbs[v][i].prog;
-            hash = verbForm.find('#', 0);
-            verbForm = verbForm.substr(0, hash - 1);
-            index = engInput.find(verbForm, 0);
-            if (index != -1 && engVerbs[v][i].prog.length() != 0)
-            {
-                letters = verbForm.length();
-                if ((engInput[index + letters] == ' '
-                || index + letters - 1 == indexes)
-                && (engInput[index - 1] == ' '
-                || index == 0))
-                {
-                    verb[0] = v;
-                    verb[1] = i;
-                    break;
-                }
-            }
+            modVerbSearch(engInput, v, i, verbForm, verb);
+            if (verb[1] != -1)
+                break;
         }
         if (verb[0] != -1)
             break;
@@ -843,6 +768,51 @@ string modVerb(string engInput, int verb[])
     
     return engInput;
     
+}
+
+//******************************************************************************
+// The modVerb search function condenses the modVerb function being repeatedly
+// called to search the English input for a verb form.
+// The function accepts as input the current outer index of the English verb
+// array as an int, the current inner index of the English verb array as an int,
+// the current verb form in the English verb array that is being searched, and
+// an int array to hold the outer and inner indexes of the verb form found.
+// The function returns nothing.
+//******************************************************************************
+void modVerbSearch(string engInput, int v, int i, string verbForm, int verb[])
+{
+    // Variables
+    int index = -1;         // Index of English verb form found in input
+    int letters = 0;        // Length of English verb form found in input
+    int indexes;            // Last index value of English input
+    int hash;               // Index of hashtag phrase in English verb
+    string initVerb;        // Verb form found (or not) in English verb array
+    
+    // Set value of current verb form (to see if there is one)
+    initVerb = verbForm;
+    
+    // Get last index value of English phrase
+    indexes = engInput.length() - 1;
+    
+    // Reset English verb indexes
+    verb[0] = verb[1] = -1;
+    
+    // Look for instance of verb form in English input
+    hash = verbForm.find('#', 0);
+    verbForm = verbForm.substr(0, hash);
+    index = engInput.find(verbForm, 0);
+    if (index != -1 && initVerb.length() != 0)
+    {
+	    letters = verbForm.length(); if (index != -1 && initVerb.length() != 0)
+	    if ((engInput[index + letters] = ' '
+	    || index + letters - 1 == indexes)
+	    && (engInput[index - 1] == ' '
+	    || index == 0))
+	    {
+		    verb[0] = v;
+		    verb[1] = i;
+	    }
+    }
 }
 
 //***************************************************************************
