@@ -803,7 +803,7 @@ void modVerbSearch(string engInput, int v, int i, string verbForm, int verb[])
     index = engInput.find(verbForm, 0);
     if (index != -1 && initVerb.length() != 0)
     {
-	    letters = verbForm.length(); if (index != -1 && initVerb.length() != 0)
+	    letters = verbForm.length();
 	    if ((engInput[index + letters] = ' '
 	    || index + letters - 1 == indexes)
 	    && (engInput[index - 1] == ' '
