@@ -33,7 +33,7 @@ string commConj();
 string perfConj();
 string pickApart(string);
 string modVerb(string, int[]);
-void modVerbSearch(string, int, int, string, int[]);
+string modVerbSearch(string, int, int, string, int[]);
 
 // Structures
 struct espTenseMod
@@ -713,29 +713,32 @@ string modVerb(string engInput, int verb[])
         for (int i = 0; i < 2; i++)
         {
             verbForm = engVerbs[v][i].infinAndPres124;
-            modVerbSearch(engInput, v, i, verbForm, verb);
+            verbForm = modVerbSearch(engInput, v, i, verbForm, verb);
             if (verb[1] != -1)
                 break;
             verbForm = engVerbs[v][i].pres3;
-            modVerbSearch(engInput, v, i, verbForm, verb);
+            verbForm = modVerbSearch(engInput, v, i, verbForm, verb);
             if (verb[1] != -1)
                 break;
             verbForm = engVerbs[v][i].past;
-            modVerbSearch(engInput, v, i, verbForm, verb);
+            verbForm = modVerbSearch(engInput, v, i, verbForm, verb);
             if (verb[1] != -1)
                 break;
             verbForm = engVerbs[v][i].part;
-            modVerbSearch(engInput, v, i, verbForm, verb);
+            verbForm = modVerbSearch(engInput, v, i, verbForm, verb);
             if (verb[1] != -1)
                 break;
             verbForm = engVerbs[v][i].prog;
-            modVerbSearch(engInput, v, i, verbForm, verb);
+            verbForm = modVerbSearch(engInput, v, i, verbForm, verb);
             if (verb[1] != -1)
                 break;
         }
         if (verb[0] != -1)
             break;
     }
+    
+    // Get index of English verb
+    index = verb[2];
     
     // Analyze direct object
     for (int j = index; j > -1; j++)
@@ -777,9 +780,9 @@ string modVerb(string engInput, int verb[])
 // array as an int, the current inner index of the English verb array as an int,
 // the current verb form in the English verb array that is being searched, and
 // an int array to hold the outer and inner indexes of the verb form found.
-// The function returns nothing.
+// The function returns the English verb found in the input.
 //******************************************************************************
-void modVerbSearch(string engInput, int v, int i, string verbForm, int verb[])
+string modVerbSearch(string engInput, int v, int i, string verbForm, int verb[])
 {
     // Variables
     int index = -1;         // Index of English verb form found in input
@@ -813,6 +816,10 @@ void modVerbSearch(string engInput, int v, int i, string verbForm, int verb[])
 		    verb[1] = i;
 	    }
     }
+    
+    verb[2] = index;
+    
+    return verbForm;
 }
 
 //***************************************************************************
