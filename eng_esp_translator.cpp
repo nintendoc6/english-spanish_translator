@@ -213,6 +213,7 @@ int main()
     string input;
     getline(cin, input);
     cout << modVerb(input, verbIndex);
+    cout << endl << "Now, it finally works!" << endl;
     
     /* checkVerb driver
     int verbIndex[] = {-1, -1};
