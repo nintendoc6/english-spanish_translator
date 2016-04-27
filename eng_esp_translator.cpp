@@ -21,7 +21,7 @@ string checkSubject(string, int[]);
 string checkTense(string, int);
 string conjugate(string, string, int, string);
 void conjDriver();
-void conjCondense(string);
+void conjCondense(string, string, string, string);
 string presConj(int, string, int, int);
 string futureConj(int, int);
 string imperfConj(int, int, string);
@@ -492,19 +492,19 @@ void conjDriver()
         {
             // Present tense conjugation
             verbForm = presConj(j, ending, endIndex, i);
-            conjCondense(verbForm);
+            conjCondense(verbForm, "á", "é", "€");
             
             // Future tense
             verbForm = futureConj(j, i);
-            conjCondense(verbForm);
+            conjCondense(verbForm, "á", "é", "€");
             
             // Imperfect tense
             verbForm = imperfConj(j, i, ending);
-            conjCondense(verbForm);
+            conjCondense(verbForm, "á", "é", "í");
             
             // Preterite tense
             verbForm = pretConj(j, i, ending, endIndex);
-            conjCondense(verbForm);
+            conjCondense(verbForm, "á", "é", "€");
             
             // Create new line at end of table
             if (i != 6)
@@ -521,19 +521,19 @@ void conjDriver()
 // The function accepts as an argument the Spanish verb form as a string.
 // The function returns nothing.
 //***************************************************************************
-void conjCondense(string verbForm)
+void conjCondense(string verbForm, string char1, string char2, string char3)
 {
     // Variables
     bool formChar = false;  // Value used in determining how to space verb forms
 
     // Print verb form
     cout << verbForm << "\t";
-    if (verbForm.find("a'", 0) != -1
-    || verbForm.find("e'", 0) != -1)
+    if (verbForm.find(char1, 0) != -1
+    || verbForm.find(char2, 0) != -1
+    || verbForm.find(char3, 0) != -1)
 	    formChar = true;
     if (verbForm.length() <= 7 + formChar)
 	    cout << "\t";
-    formChar = false;
 }
 
 //***************************************************************************
