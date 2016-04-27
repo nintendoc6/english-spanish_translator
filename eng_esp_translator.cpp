@@ -208,7 +208,7 @@ int main()
     string subject;         // Subject of English sentence
     string translated;      // Translated English sentence into Spanish
     
-    /** modVerb driver
+    /* Test verb context identification (modVerb driver)
     int verbIndex[] = {-1, -1};
     string modded;
     string input;
@@ -216,7 +216,7 @@ int main()
     cout << modVerb(input, verbIndex);
     */
     
-    /* checkVerb driver
+    /* Check verb identification (checkVerb driver)
     int verbIndex[] = {-1, -1};
     string input;
     cout << "Enter an English verb or English verb phrase: ";
@@ -226,13 +226,13 @@ int main()
     cout << "Index 2: " << verbIndex[1] << endl;
     */
     
-    /* checkSubject driver
+    /* Test subject identification (checkSubject driver)
     string engSubject;
     engSubject = checkSubject(input, verbIndex);
     cout << "Subject: " << engSubject << endl << endl;
     */
     
-    // Test conjugations
+    /* Test conjugations (conjDriver driver)
     conjDriver();
 
     return 0;
