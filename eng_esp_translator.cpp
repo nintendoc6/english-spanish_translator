@@ -21,6 +21,7 @@ string checkSubject(string, int[]);
 string checkTense(string, int);
 string conjugate(string, string, int, string);
 void conjDriver();
+void conjCondense(string, string, string, string);
 string presConj(int, string, int, int);
 string futureConj(int, int);
 string imperfConj(int, int, string);
@@ -207,12 +208,13 @@ int main()
     string subject;         // Subject of English sentence
     string translated;      // Translated English sentence into Spanish
     
-    // modVerb driver
+    /** modVerb driver
     int verbIndex[] = {-1, -1};
     string modded;
     string input;
     getline(cin, input);
     cout << modVerb(input, verbIndex);
+    */
     
     /* checkVerb driver
     int verbIndex[] = {-1, -1};
@@ -231,7 +233,7 @@ int main()
     */
     
     // Test conjugations
-    //conjDriver();
+    conjDriver();
 
     return 0;
 }
@@ -468,10 +470,8 @@ void conjDriver()
     // Variables
     int endIndex;
     int person = 1;
-    bool presChar = false;
-    bool futureChar = false;
-    bool imperfChar = false;
     string ending;
+    string verbForm;    // Current Spanish verb form being printed
     
     // Create table header
     cout << "Verb\t\tPresent\t\tFuture\t\tImperfect\tPreterite\n";
@@ -487,204 +487,56 @@ void conjDriver()
         cout << espVerbs[j].infin << "\t";
         if (espVerbs[j].infin.length() <= 7)
             cout << "\t";
-        
-        // Present tense, 1st person
-        cout << presConj(j, ending, endIndex, person) << "\t";
-        if (presConj(j, ending, endIndex, person).find("á", 0) != -1
-        || presConj(j, ending, endIndex, person).find("é", 0) != -1)
-            presChar = true;
-        if (presConj(j, ending, endIndex, person).length() <= 7 + presChar)
-            cout << "\t";
-        presChar = false;
-        
-        // Future tense, 1st person
-        cout << futureConj(j, person) << "\t";
-        if (futureConj(j, person).find("á", 0) != -1
-        || futureConj(j, person).find("é", 0) != -1)
-            futureChar = true;
-        if (futureConj(j, person).length() <= 7 + futureChar)
-            cout << "\t";
-        futureChar = false;
-        
-        // Imperfect tense, 1st person
-        cout << imperfConj(j, person, ending) << "\t";
-        if (imperfConj(j, person, ending).find("á", 0) != -1
-        || imperfConj(j, person, ending).find("é", 0) != -1
-        || imperfConj(j, person, ending).find("í", 0) != -1)
-            imperfChar = true;
-        if (imperfConj(j, person, ending).length() <= 7 + imperfChar)
-            cout << "\t";
-        imperfChar = false;
-        
-        // Preterite tense, 1st person
-        cout << pretConj(j, person++, ending, endIndex) << endl << "\t\t";
-
-        
-        // Present tense, 2nd person
-        cout << presConj(j, ending, endIndex, person) << "\t";
-        if (presConj(j, ending, endIndex, person).find("á", 0) != -1
-        || presConj(j, ending, endIndex, person).find("é", 0) != -1)
-            presChar = true;
-        if (presConj(j, ending, endIndex, person).length() <= 7 + presChar)
-            cout << "\t";
-        presChar = false;
-        
-        // Future tense, 2nd person
-        cout << futureConj(j, person) << "\t";
-        if (futureConj(j, person).find("á", 0) != -1
-        || futureConj(j, person).find("é", 0) != -1)
-            futureChar = true;
-        if (futureConj(j, person).length() <= 7 + futureChar)
-            cout << "\t";
-        futureChar = false;
-        
-        // Imperfect tense, 2nd person
-        cout << imperfConj(j, person, ending) << "\t";
-        if (imperfConj(j, person, ending).find("á", 0) != -1
-        || imperfConj(j, person, ending).find("é", 0) != -1
-        || imperfConj(j, person, ending).find("í", 0) != -1)
-            imperfChar = true;
-        if (imperfConj(j, person, ending).length() <= 7 + imperfChar)
-            cout << "\t";
-        imperfChar = false;
-        
-        // Preterite tense, 2nd person
-        cout << pretConj(j, person++, ending, endIndex) << endl << "\t\t";
-        
-        
-        // Present tense, 3rd person
-        cout << presConj(j, ending, endIndex, person) << "\t";
-        if (presConj(j, ending, endIndex, person).find("á", 0) != -1
-        || presConj(j, ending, endIndex, person).find("é", 0) != -1)
-            presChar = true;
-        if (presConj(j, ending, endIndex, person).length() <= 7 + presChar)
-            cout << "\t";
-        presChar = false;
-        
-        // Future tense, 3rd person
-        cout << futureConj(j, person) << "\t";
-        if (futureConj(j, person).find("á", 0) != -1
-        || futureConj(j, person).find("é", 0) != -1)
-            futureChar = true;
-        if (futureConj(j, person).length() <= 7 + futureChar)
-            cout << "\t";
-        futureChar = false;
-        
-        // Imperfect tense, 3rd person
-        cout << imperfConj(j, person, ending) << "\t";
-        if (imperfConj(j, person, ending).find("á", 0) != -1
-        || imperfConj(j, person, ending).find("é", 0) != -1
-        || imperfConj(j, person, ending).find("í", 0) != -1)
-            imperfChar = true;
-        if (imperfConj(j, person, ending).length() <= 7 + imperfChar)
-            cout << "\t";
-        imperfChar = false;
-        
-        // Preterite tense, 3rd person
-        cout << pretConj(j, person++, ending, endIndex) << endl << "\t\t";
-
-        
-        // Present tense, 4th person
-        cout << presConj(j, ending, endIndex, person) << "\t";
-        if (presConj(j, ending, endIndex, person).find("á", 0) != -1
-        || presConj(j, ending, endIndex, person).find("é", 0) != -1)
-            presChar = true;
-        if (presConj(j, ending, endIndex, person).length() <= 7 + presChar)
-            cout << "\t";
-        presChar = false;
-        
-        // Future tense, 4th person
-        cout << futureConj(j, person) << "\t";
-        if (futureConj(j, person).find("á", 0) != -1
-        || futureConj(j, person).find("é", 0) != -1)
-            futureChar = true;
-        if (futureConj(j, person).length() <= 7 + futureChar)
-            cout << "\t";
-        futureChar = false;
-        
-        // Imperfect tense, 4th person
-        cout << imperfConj(j, person, ending) << "\t";
-        if (imperfConj(j, person, ending).find("á", 0) != -1
-        || imperfConj(j, person, ending).find("é", 0) != -1
-        || imperfConj(j, person, ending).find("í", 0) != -1)
-            imperfChar = true;
-        if (imperfConj(j, person, ending).length() <= 7 + imperfChar)
-            cout << "\t";
-        imperfChar = false;
-        
-        // Preterite tense, 4th person
-        cout << pretConj(j, person++, ending, endIndex) << endl << "\t\t";
-
-        
-        // Present tense, 5th person
-        cout << presConj(j, ending, endIndex, person) << "\t";
-        if (presConj(j, ending, endIndex, person).find("á", 0) != -1
-        || presConj(j, ending, endIndex, person).find("é", 0) != -1)
-            presChar = true;
-        if (presConj(j, ending, endIndex, person).length() <= 7 + presChar)
-            cout << "\t";
-        presChar = false;
-        
-        // Future tense, 5th person
-        cout << futureConj(j, person) << "\t";
-        if (futureConj(j, person).find("á", 0) != -1
-        || futureConj(j, person).find("é", 0) != -1)
-            futureChar = true;
-        if (futureConj(j, person).length() <= 7 + futureChar)
-            cout << "\t";
-        futureChar = false;
-        
-        // Imperfect tense, 5th person
-        cout << imperfConj(j, person, ending) << "\t";
-        if (imperfConj(j, person, ending).find("á", 0) != -1
-        || imperfConj(j, person, ending).find("é", 0) != -1
-        || imperfConj(j, person, ending).find("í", 0) != -1)
-            imperfChar = true;
-        if (imperfConj(j, person, ending).length() <= 7 + imperfChar)
-            cout << "\t";
-        imperfChar = false;
-        
-        // Preterite tense, 5th person
-        cout << pretConj(j, person++, ending, endIndex) << endl << "\t\t";
-
-        
-        // Present tense, 6th person
-        cout << presConj(j, ending, endIndex, person) << "\t";
-        if (presConj(j, ending, endIndex, person).find("á", 0) != -1
-        || presConj(j, ending, endIndex, person).find("é", 0) != -1)
-            presChar = true;
-        if (presConj(j, ending, endIndex, person).length() <= 7 + presChar)
-            cout << "\t";
-        presChar = false;
-        
-        // Future tense, 6th person
-        cout << futureConj(j, person) << "\t";
-        if (futureConj(j, person).find("á", 0) != -1
-        || futureConj(j, person).find("é", 0) != -1)
-            futureChar = true;
-        if (futureConj(j, person).length() <= 7 + futureChar)
-            cout << "\t";
-        futureChar = false;
-        
-        // Imperfect tense, 6th person
-        cout << imperfConj(j, person, ending) << "\t";
-        if (imperfConj(j, person, ending).find("á", 0) != -1
-        || imperfConj(j, person, ending).find("é", 0) != -1
-        || imperfConj(j, person, ending).find("í", 0) != -1)
-            imperfChar = true;
-        if (imperfConj(j, person, ending).length() <= 7 + imperfChar)
-            cout << "\t";
-        imperfChar = false;
-        
-        // Preterite tense, 6th person
-        cout << pretConj(j, person, ending, endIndex) << endl << endl;
-        
-        // Reset person
-        person = 1;
+            
+        for (int i = 1; i <= 6; i++)
+        {
+            // Present tense conjugation
+            verbForm = presConj(j, ending, endIndex, i);
+            conjCondense(verbForm, "á", "é", "€");
+            
+            // Future tense
+            verbForm = futureConj(j, i);
+            conjCondense(verbForm, "á", "é", "€");
+            
+            // Imperfect tense
+            verbForm = imperfConj(j, i, ending);
+            conjCondense(verbForm, "á", "é", "í");
+            
+            // Preterite tense
+            verbForm = pretConj(j, i, ending, endIndex);
+            conjCondense(verbForm, "á", "é", "€");
+            
+            // Create new line at end of table
+            if (i != 6)
+                cout << "\n\t\t";
+            else
+                cout << "\n\n";
+        }
     }
 }
 
-//*****************************************************************************
+//***************************************************************************
+// The conjCondense function condenses the conjDriver function by analyzing
+// Spanish verb forms and printing them in a table according to their length.
+// The function accepts as an argument the Spanish verb form as a string.
+// The function returns nothing.
+//***************************************************************************
+void conjCondense(string verbForm, string char1, string char2, string char3)
+{
+    // Variables
+    bool formChar = false;  // Value used in determining how to space verb forms
+
+    // Print verb form
+    cout << verbForm << "\t";
+    if (verbForm.find(char1, 0) != -1
+    || verbForm.find(char2, 0) != -1
+    || verbForm.find(char3, 0) != -1)
+	    formChar = true;
+    if (verbForm.length() <= 7 + formChar)
+	    cout << "\t";
+}
+
+//***************************************************************************
 // The modVerb function analyzes English verbs and appends codes to them, based
 // on subject and sentence context.
 // The function receives as input an English sentence or phrase as a string and
