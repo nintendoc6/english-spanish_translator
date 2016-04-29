@@ -232,7 +232,7 @@ int main()
     cout << "Subject: " << engSubject << endl << endl;
     */
     
-    /* Test conjugations (conjDriver driver)
+    // Test conjugations (conjDriver driver)
     conjDriver();
 
     return 0;
