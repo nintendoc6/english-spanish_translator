@@ -21,7 +21,7 @@ string checkSubject(string, int[]);
 string checkTense(string, int);
 string conjugate(string, string, int, string);
 void conjDriver();
-void conjCondense(string, string, string, string);
+void conjCondense(string);
 string presConj(int, string, int, int);
 string futureConj(int, int);
 string imperfConj(int, int, string);
@@ -492,19 +492,19 @@ void conjDriver()
         {
             // Present tense conjugation
             verbForm = presConj(j, ending, endIndex, i);
-            conjCondense(verbForm, "á", "é", "€");
+            conjCondense(verbForm);
             
             // Future tense
             verbForm = futureConj(j, i);
-            conjCondense(verbForm, "á", "é", "€");
+            conjCondense(verbForm);
             
             // Imperfect tense
             verbForm = imperfConj(j, i, ending);
-            conjCondense(verbForm, "á", "é", "í");
+            conjCondense(verbForm);
             
             // Preterite tense
             verbForm = pretConj(j, i, ending, endIndex);
-            conjCondense(verbForm, "á", "é", "€");
+            conjCondense(verbForm);
             
             // Create new line at end of table
             if (i != 6)
@@ -521,16 +521,16 @@ void conjDriver()
 // The function accepts as an argument the Spanish verb form as a string.
 // The function returns nothing.
 //***************************************************************************
-void conjCondense(string verbForm, string char1, string char2, string char3)
+void conjCondense(string verbForm)
 {
     // Variables
     bool formChar = false;  // Value used in determining how to space verb forms
 
     // Print verb form
     cout << verbForm << "\t";
-    if (verbForm.find(char1, 0) != -1
-    || verbForm.find(char2, 0) != -1
-    || verbForm.find(char3, 0) != -1)
+    if (verbForm.find("á", 0) != -1
+    || verbForm.find("é", 0) != -1
+    || verbForm.find("í", 0) != -1)
 	    formChar = true;
     if (verbForm.length() <= 7 + formChar)
 	    cout << "\t";
