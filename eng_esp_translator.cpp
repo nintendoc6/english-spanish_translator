@@ -233,7 +233,7 @@ int main()
     */
     
     // Test conjugations (conjDriver driver)
-    conjDriver();
+    //conjDriver();
 
     return 0;
 }
@@ -536,7 +536,7 @@ void conjCondense(string verbForm)
 	    cout << "\t";
 }
 
-//***************************************************************************
+//*****************************************************************************
 // The modVerb function analyzes English verbs and appends codes to them, based
 // on subject and sentence context.
 // The function receives as input an English sentence or phrase as a string and
