@@ -208,7 +208,7 @@ int main()
     string subject;         // Subject of English sentence
     string translated;      // Translated English sentence into Spanish
     
-    /* Test verb context identification (modVerb driver)
+    /* Test verb and context identification (checkVerb and modVerb driver)
     int verbIndex[] = {-1, -1};
     string modded;
     string input;
@@ -252,6 +252,7 @@ void checkVerb (string engInput, int verb[])
     int letters = 0;    // Length of English verb form found in input
     int indexes;        // Last index value of English phrase
     string verbForm;    // English verb form found in English input
+    string modded;      // English verb modified based on context
     
     // Get last index value of English phrase
     indexes = engInput.length() - 1;
@@ -291,6 +292,9 @@ void checkVerb (string engInput, int verb[])
     
     // Get index of English verb
     index = verb[2];
+    
+    // Modify verb
+    modded = modVerb(engInput, verbForm, verb);
 }
 
 //******************************************************************************
