@@ -16,14 +16,15 @@
 using namespace std;
 
 // Function prototypes
-void checkVerb(string, int[]);
+string checkVerb(string, int[]);
 string verbSearch(string, int, int, string, int[]);
-string modVerb(string, string, int[]);
+string modVerb(string, string, int);
+string conjunction(string, string, int);
 string checkSubject(string, int[]);
 string checkTense(string, int);
 string conjugate(string, string, int, string);
 void conjDriver();
-void conjCondense(string);
+void conjPrint(string);
 string presConj(int, string, int, int);
 string futureConj(int, int);
 string imperfConj(int, int, string);
@@ -201,29 +202,16 @@ espTenseMod espTenseMods = {"he", "habré", "había"};
 int main()
 {
     // Variables
-    string engInput;        // English user input
-    string engSentence;     // Current sentence being translated
-    int verb;               // Index of identified verb in engVerb array
-    string tense;           // Tense of identified verb in engVerb array
-    string subject;         // Subject of English sentence
-    string translated;      // Translated English sentence into Spanish
     
-    /* Test verb and context identification (checkVerb and modVerb driver)
-    int verbIndex[] = {-1, -1};
+    // Test verb and context identification (checkVerb and modVerb driver)
+    int verb[] = {-1, -1, -1};
+    string input;
     string modded;
-    string input;
+    cout << "Enter an English sentence:\n";
     getline(cin, input);
-    cout << modVerb(input, verbIndex);
-    */
-    
-    // Check verb identification (checkVerb driver)
-    int verbIndex[] = {-1, -1};
-    string input;
-    cout << "Enter an English verb or English verb phrase: ";
-    getline(cin, input);
-    checkVerb(input, verbIndex);
-    cout << "Index 1: " << verbIndex[0] << endl;
-    cout << "Index 2: " << verbIndex[1] << endl;
+    string thing = checkVerb(input, verb);
+    string thing2 = checkVerb(thing, verb);
+    cout << "Modded twice: " << thing2 << endl;
     //*/
     
     /* Test subject identification (checkSubject driver)
@@ -245,17 +233,13 @@ int main()
 // verb indexes as an int array.
 // The function returns nothing.
 //*****************************************************************************
-void checkVerb (string engInput, int verb[])
+string checkVerb (string engInput, int verb[])
 {
     // Variables
     int index = -1;     // Index of English verb form found in input
     int letters = 0;    // Length of English verb form found in input
-    int indexes;        // Last index value of English phrase
     string verbForm;    // English verb form found in English input
     string modded;      // English verb modified based on context
-    
-    // Get last index value of English phrase
-    indexes = engInput.length() - 1;
     
     // Reset English verb indexes
     verb[0] = verb[1] = -1;
@@ -294,7 +278,9 @@ void checkVerb (string engInput, int verb[])
     index = verb[2];
     
     // Modify verb
-    modded = modVerb(engInput, verbForm, verb);
+    modded = modVerb(engInput, verbForm, verb[2]);
+    
+    return modded;
 }
 
 //******************************************************************************
@@ -311,15 +297,17 @@ string verbSearch(string engInput, int v, int i, string verbForm, int verb[])
     // Variables
     int index = -1;         // Index of English verb form found in input
     int letters = 0;        // Length of English verb form found in input
-    int indexes;            // Last index value of English input
+    int lastIndex;          // Last index value of English input
     int hash;               // Index of hashtag phrase in English verb
-    string initVerb;        // Verb form found (or not) in English verb array
+    int yaHash;             // Index of hashtag code already found in input
+    int start = 0;          // Position in English input to start verb search
+    string initVerb;        // Original verb form from in English verb array
     
     // Set value of current verb form (to see if there is one)
     initVerb = verbForm;
     
     // Get last index value of English phrase
-    indexes = engInput.length() - 1;
+    lastIndex = engInput.length() - 1;
     
     // Reset English verb indexes
     verb[0] = verb[1] = -1;
@@ -327,12 +315,15 @@ string verbSearch(string engInput, int v, int i, string verbForm, int verb[])
     // Look for instance of verb form in English input
     hash = verbForm.find('#', 0);
     verbForm = verbForm.substr(0, hash);
-    index = engInput.find(verbForm, 0);
+    yaHash = engInput.find('#', 0);
+    if (yaHash != -1)
+        start = yaHash + 2;
+    index = engInput.find(verbForm, start);
     if (index != -1 && initVerb.length() != 0)
     {
 	    letters = verbForm.length();
 	    if ((engInput[index + letters] = ' '
-	    || index + letters - 1 == indexes)
+	    || index + letters - 1 == lastIndex)
 	    && (engInput[index - 1] == ' '
 	    || index == 0))
 	    {
@@ -341,49 +332,64 @@ string verbSearch(string engInput, int v, int i, string verbForm, int verb[])
 	    }
     }
     
+    // Send back information about the verb form found
     verb[2] = index;
     
     return verbForm;
 }
 
-//*****************************************************************************
+//******************************************************************************
 // The modVerb function analyzes English verbs and appends codes to them, based
 // on subject and sentence context.
-// The function receives as input an English sentence or phrase as a string and
-// an int array to hold the outer and inner indexes of the verb form found.
+// The function receives as input an English sentence or phrase as a string, the
+// English verb found in the English input as a string, and the index of the
+// verb in the input as an int.
 // The function returns the modified English sentence or phrase as a string.
-//*****************************************************************************
-string modVerb(string engInput, string verbForm, int verb[])
+//******************************************************************************
+string modVerb(string engInput, string verbForm, int index)
 {
     // Variables
-    int objPos = 0;         // Variable used in getting direct object
-    string dObject = "";    // Direct object to which the verb refers
-    string testObject;      // Current direct object used in searching for a match
+    int wordPos = 0;        // Variable used in getting direct object
+    int nextWordPos;        // Position of word that follows verb
+    string nextWord = "";   // Direct object to which the verb refers
+    string testWord = "";   // Current direct object used in searching for a match
     string code = "#b";     // Hashtag code to be appended to English verb
     
     // Files
     ifstream pObjectFile;   // File for people objects
+    ifstream conjFile;      // File for conjunctions
     
     // Open files
     pObjectFile.open("objPeople.txt");
+    conjFile.open("conjunctions.txt");
     
-    // Analyze direct object
+    // Analyze word following verb
     for (int j = index; j > -1; j++)
     {
         if (engInput[j] == ' ')
         {
+            nextWordPos = j + 1;
             do
             {
-                dObject.insert(objPos++, 1, engInput[j++ + 1]);
+                nextWord.insert(wordPos++, 1, engInput[j++ + 1]);
             } while (isalpha(engInput[j + 1]) && engInput[j + 1] != ' ');
             break;
         }
     }
     
-    // Check to see if direct object is a people object
-    while (pObjectFile >> testObject)
+    // Check to see if next word is a conjunction
+    while (conjFile >> testWord)
     {
-        if (testObject == dObject)
+        if (testWord == nextWord)
+        {
+            code = conjunction(engInput, nextWord, nextWordPos);
+        }
+    }
+    
+    // Check to see if next word is a people object
+    while (pObjectFile >> testWord)
+    {
+        if (testWord == nextWord)
         {
             code = "#p";
             break;
@@ -395,9 +401,53 @@ string modVerb(string engInput, string verbForm, int verb[])
     
     // Close files
     pObjectFile.close();
+    conjFile.close();
     
     return engInput;
     
+}
+
+//**************************************************************************
+// The conjunction function examines a conjunction following a verb in an
+// English sentence, as well as the verb following it, then determines the
+// appropriate hashtag code.
+// The function accepts as arguments the English sentence as a string, the
+// detected conjunction as a string, and the index of the conjunction in the
+// sentence as an int.
+// The function returns the hashtag code as a string.
+//**************************************************************************
+string conjunction(string input, string conjunction, int index)
+{
+    // Variables
+    int pos = 0;            // Variable used in getting following verb
+    int verbIndex;          // Index of second verb in English input
+    int hashIndex;          // Index of hashtag code in English sentence
+    string nextVerb = "";   // Verb that follows conjunction
+    string modded;          // English input modified based on second verb
+    string code;            // Hashtag code to be appended
+    
+    // Analyze verb phrase that follows conjunction
+    for (int j = index; j > -1; j++)
+    {
+        if (input[j] == ' ')
+        {
+            verbIndex = j + 1;
+            do
+            {
+                nextVerb.insert(pos++, 1, input[j++ + 1]);
+            } while (isalpha(input[j + 1]) && input[j + 1] != ' ');
+            break;
+        }
+    }
+    
+    // Modify second verb
+    modded = modVerb(input, nextVerb, verbIndex);
+    
+    // Get hashtag code from modified sentence
+    hashIndex = modded.find('#', 0);
+    code = modded.substr(hashIndex, 2);
+    
+    return code;
 }
 
 //*****************************************************************************
@@ -553,19 +603,19 @@ void conjDriver()
         {
             // Present tense conjugation
             verbForm = presConj(j, ending, endIndex, i);
-            conjCondense(verbForm);
+            conjPrint(verbForm);
             
             // Future tense
             verbForm = futureConj(j, i);
-            conjCondense(verbForm);
+            conjPrint(verbForm);
             
             // Imperfect tense
             verbForm = imperfConj(j, i, ending);
-            conjCondense(verbForm);
+            conjPrint(verbForm);
             
             // Preterite tense
             verbForm = pretConj(j, i, ending, endIndex);
-            conjCondense(verbForm);
+            conjPrint(verbForm);
             
             // Create new line at end of table
             if (i != 6)
@@ -577,12 +627,12 @@ void conjDriver()
 }
 
 //***************************************************************************
-// The conjCondense function condenses the conjDriver function by analyzing
+// The conjPrint function condenses the conjDriver function by analyzing
 // Spanish verb forms and printing them in a table according to their length.
 // The function accepts as an argument the Spanish verb form as a string.
 // The function returns nothing.
 //***************************************************************************
-void conjCondense(string verbForm)
+void conjPrint(string verbForm)
 {
     // Variables
     bool formChar = false;  // Value used in determining how to space verb forms
