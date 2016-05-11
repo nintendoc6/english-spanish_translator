@@ -317,13 +317,19 @@ string verbSearch(string engInput, int v, int i, string verbForm, int verb[])
     hash = verbForm.find('#', 0);
     verbForm = verbForm.substr(0, hash);
     yaHash = engInput.find('#', 0);
+    index = engInput.find(verbForm, start);
     if (yaHash != -1)
-        start = yaHash + 2;
+    {
+        if (yaHash > index)
+            start = index;
+        else
+            start = yaHash + 2;
+    }
     index = engInput.find(verbForm, start);
     if (index != -1 && initVerb.length() != 0)
     {
 	    letters = verbForm.length();
-	    if ((engInput[index + letters] = ' '
+	    if ((engInput[index + letters] == ' '
 	    || index + letters - 1 == lastIndex)
 	    && (engInput[index - 1] == ' '
 	    || index == 0))
