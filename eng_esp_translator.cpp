@@ -209,9 +209,9 @@ int main()
     string modded;
     cout << "Enter an English sentence:\n";
     getline(cin, input);
-    string thing = checkVerb(input, verb);
-    string thing2 = checkVerb(thing, verb);
-    cout << "Modded twice: " << thing2 << endl;
+    modded = checkVerb(input, verb);
+    modded = checkVerb(modded, verb);
+    cout << "Modded twice: " << modded << endl;
     //*/
     
     /* Test subject identification (checkSubject driver)
@@ -231,7 +231,8 @@ int main()
 // and determines the verb.
 // The function receives as input an English sentence or phrase as a string and
 // verb indexes as an int array.
-// The function returns nothing.
+// The function returns the English input with the found verb modified as a
+// string.
 //*****************************************************************************
 string checkVerb (string engInput, int verb[])
 {
