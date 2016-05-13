@@ -209,9 +209,11 @@ int main()
     string modded;
     cout << "Enter an English sentence:\n";
     getline(cin, input);
-    modded = checkVerb(input, verb);
-    modded = checkVerb(modded, verb);
-    cout << "Modded twice: " << modded << endl;
+    do
+    {
+        input = checkVerb(input, verb);
+    } while (verb[0] != -1);
+    cout << "Modded: " << input << endl;
     //*/
     
     /* Test subject identification (checkSubject driver)
